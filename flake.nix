@@ -16,7 +16,7 @@
 				...
 			}:
 			let
-				jdk = pkgs.zulu;
+				jdk = pkgs.zulu8;
 			in
 			{
 				_module.args.pkgs = import nixpkgs {
@@ -26,11 +26,10 @@
 				devShells.default = pkgs.mkShell {
 					nativeBuildInputs = with pkgs; [
 						jdk
-						gradle
 						(kotlin.override {
 							jre = jdk;
 						})
-						(gradle_8.override {
+						(gradle_7.override {
 							java = jdk;
 						})
 					];
