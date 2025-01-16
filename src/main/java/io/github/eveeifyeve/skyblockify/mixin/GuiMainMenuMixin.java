@@ -1,4 +1,4 @@
-package com.example.examplemod.mixin;
+package io.github.eveeifyeve.skyblockify.mixin;
 
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
