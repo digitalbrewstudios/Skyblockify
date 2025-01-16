@@ -1,14 +1,14 @@
 [
   {
-    "modid": "examplemod",
-    "name": "Example Mod",
-    "description": "Example placeholder mod.",
-    "version": "${MOD_VERSION}",
-    "mcversion": "1.8.9",
-    "url": "",
+    "modid": "${modid}",
+    "name": "Skyblockify",
+    "description": "An mod that includes everything that is needed for hypixel skyblock",
+    "version": "${version}",
+    "mcversion": "${mc_version}",
+    "url": "https://github.com/eveeifyeve/skyblockify",
     "updateUrl": "",
     "authorList": [
-      "ExampleDude"
+      "eveeifyeve"
     ],
     "credits": "",
     "logoFile": "",
