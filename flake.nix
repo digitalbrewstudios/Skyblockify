@@ -29,7 +29,7 @@
 						(kotlin.override {
 							jre = jdk;
 						})
-						(gradle_7.override {
+						(gradle_8.override {
 							java = jdk;
 						})
 					];
