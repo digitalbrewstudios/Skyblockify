@@ -2,11 +2,12 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocatio
 import gg.essential.gradle.util.noServerRunConfigs
 
 plugins {
-  java
-  kotlin("jvm") version "1.7.20"
+  idea
+	java
+  kotlin("jvm") version "1.8.22"
   id("gg.essential.loom") version "0.10.0.+"
-  id("gg.essential.defaults") version "0.1.16"
-  id("com.github.johnrengelman.shadow") version "7.1.2"
+	id("gg.essential.defaults") version "0.1.16"
+  id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 repositories {
@@ -50,8 +51,6 @@ sourceSets.main { output.setResourcesDir(file("$buildDir/classes/kotlin/main")) 
 
 // Java 8
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
-
-kotlin.jvmToolchain(jdkVersion = 8)
 
 tasks.compileKotlin.get().kotlinOptions {
   jvmTarget = "1.8"
