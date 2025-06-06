@@ -5,7 +5,7 @@ kotlin = "2.2.0-RC2"
 shaddow = "9.0.0-beta16"
 detekt = "1.23.8"
 mixins = "0.8.5"
-weblite = "1.1"
+weblite = "1.2"
 
 [libraries]
 kotlin-stllib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref="kotlin" }
