@@ -19,6 +19,7 @@
 				jdk = pkgs.zulu;
 			in
 			{
+			    formatter = pkgs.nixpkgs-rfc-fmt;
 				_module.args.pkgs = import nixpkgs {
 					inherit system;
 					config.allowUnsupportedSystem = true;
@@ -35,6 +36,17 @@
 					];
 
 					JAVA_HOME = jdk.home;
+					LD_LIBRARY_PATH = if pkgs.stdenv.isLinux then lib.makeLibraryPath [
+							pkgs.glfw3-minecraft
+							pkgs.openal
+							pkgs.flite
+							pkgs.libglvnd
+							pkgs.pulseaudio
+							pkgs.udev
+					] else [
+					    pkgs.glfw3-minecraft
+					    pkgs.openal
+					];
 				};
 			};
 		};
