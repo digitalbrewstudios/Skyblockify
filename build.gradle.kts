@@ -1,95 +1,165 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
-import gg.essential.gradle.util.noServerRunConfigs
+import io.gitlab.arturbosch.detekt.Detekt
 
 plugins {
   idea
-	java
-  kotlin("jvm") version "1.8.22"
-  id("gg.essential.loom") version "0.10.0.+"
-	id("gg.essential.defaults") version "0.1.16"
-  id("com.github.johnrengelman.shadow") version "8.1.1"
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.unimined)
+  alias(libs.plugins.detekt)
+  alias(libs.plugins.shaddow)
 }
+
 
 repositories {
-  mavenCentral()
-  maven("https://repo.spongepowered.org/maven/")
+  unimined.neoForgedMaven()
+  unimined.spongeMaven()
+  unimined.modrinthMaven()
+  unimined.wagYourMaven("releases")
 }
 
-@Suppress
-dependencies {
-  implementation("org.spongepowered:mixin:0.7.11-SNAPSHOT")
-  shadow("org.spongepowered:mixin:0.7.11-SNAPSHOT")
-  shadow("org.jetbrains.kotlin:kotlin-stdlib:1.7.20")
-  shadow("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20")
-}
 
-val modid: string by project 
-val baseGroup: string by project
-val version: string by project
-val mcVersion: string by project
+val modid: String by project;
+val archivesName: String by project;
+val mcVersion: String by project;
+val modVersion = properties["version"].toString();
+val fabricVersion: String by project;
+val neoForgeVersion: String by project;
 
-loom {
-  noServerRunConfigs()
+version = "${modid}-1.20.5"
+base.archivesName.set(archivesName)
 
-  runs {
-    getByName("client") {
-      programArgs(
-              "--tweakClass",
-              "org.spongepowered.asm.launch.MixinTweaker",
-              "--mixin",
-              "mixins.json"
-      )
-    }
+// Source Sets
+val SourceSetContainer.main: SourceSet by sourceSets.getting
+val SourceSetContainer.fabric: SourceSet by sourceSets.creating
+val SourceSetContainer.forge: SourceSet by sourceSets.creating
+
+
+unimined.minecraft {
+  version = mcVersion;
+  mappings {
+    intermediary()
+    mojmap()
+    devFallbackNamespace("official")
   }
 
-  forge { mixinConfigs("mixins.$modid.json") }
+  mods.modImplementation {
+    namespace("intermediary")
+  }
 
-  @Suppress("UnstableApiUsage") mixin { defaultRefmapName.set("mixins.$modid.refmap.json") }
+  // if you don't want to build/remap a "common" jar
+  if (sourceSet == sourceSets.main) {
+    defaultRemapJar = false
+    runs.off = true
+  }
+
+  if (sourceSet == sourceSets.forge || sourceSet == sourceSets.fabric) {
+    runs.config("server") {
+      enabled = false
+    }
+  }
 }
 
-sourceSets.main { output.setResourcesDir(file("$buildDir/classes/kotlin/main")) }
+unimined.minecraft(sourceSets.fabric) {
+  combineWith(sourceSets.main)
 
-// Java 8
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+  fabric {
+    loader(fabricVersion)
+  }
 
-tasks.compileKotlin.get().kotlinOptions {
-  jvmTarget = "1.8"
-  languageVersion = "1.7"
+
+}
+
+unimined.minecraft(sourceSets.forge) {
+  combineWith(sourceSets.main)
+
+  neoForge {
+    loader(neoForgeVersion)
+  }
+}
+
+
+// Libraries
+
+val minecraftLibraries by configurations.getting
+val forgeMinecraftLibraries by configurations.getting
+val fabricMinecraftLibraries by configurations.getting
+
+dependencies {
+  minecraftLibraries(libs.weblite)
+  fabricMinecraftLibraries(libs.weblite)
+  forgeMinecraftLibraries(libs.weblite)
+  implementation(libs.mixins)
+  shadow(libs.mixins)
+  shadow(libs.kotlin.stllib)
 }
 
 tasks {
-  processResources {
-    inputs.property("modid", modid)
-		inputs.property("version", version)
-		inputs.property("mcversion", mcVersion)
+  withType<ProcessResources> {
+    inputs.property("version", project.version)
+    inputs.property("modId", modid)
+    inputs.property("fabricVerson", fabricVersion)
+    inputs.property("mcVersion", mcVersion)
 
-    filesMatching(listOf("mcmod.info", "mixin.$modid.json") { expand(inputs.properties) }
+
+    filesMatching(listOf("mixins.$modid.json")) {
+      expand(inputs.properties)
+    }
+  }
+  named<ProcessResources>("processFabricResources") {
+    from(sourceSets.fabric.resources)
+    inputs.property("version", project.version)
+    inputs.property("modId", modid)
+    inputs.property("fabricVerson", fabricVersion)
+    inputs.property("mcVersion", mcVersion)
+
+
+    filesMatching(listOf("fabric.mod.json", "mixins.$modid.json")) {
+      expand(inputs.properties)
+    }
   }
 
-  // Shadow jar
 
-  val relocateShadowJar by
-          creating(ConfigureShadowRelocation::class) {
-            target = shadowJar.get()
-            prefix = "${baseGroup}.libs"
-          }
+  named<ProcessResources>("processForgeResources") {
+    from(sourceSets.forge.resources)
+    inputs.property("version", modVersion)
+    inputs.property("mod_id", modid)
+    inputs.property("neoForgeVersion", neoForgeVersion)
+    inputs.property("mcVersion", modid)
 
-  jar {
-    enabled = false
-    manifest.attributes(
-            "TweakClass" to "${relocateShadowJar.prefix}.org.spongepowered.asm.launch.MixinTweaker",
-    )
+
+    filesMatching(listOf("META-INF/neoforge.mods.toml", "mixins.$modid.json")) {
+      expand(inputs.properties)
+    }
   }
 
-  shadowJar {
-    configurations = listOf(project.configurations.shadow.get())
-    mergeServiceFiles()
-    archiveClassifier.set("mapped")
-    destinationDirectory.set(temporaryDir)
-
-    dependsOn(relocateShadowJar)
-    finalizedBy(remapJar)
+  withType<Detekt>().configureEach {
+    reports {
+      xml.required.set(true)
+      html.required.set(true)
+      sarif.required.set(true)
+      md.required.set(true)
+    }
   }
 
-  remapJar { input.set(shadowJar.get().archiveFile) }
+  test {
+    useJUnitPlatform()
+  }
 }
+
+// Detekt
+
+detekt {
+  toolVersion = "1.23.8"
+  config.setFrom(file("config/detekt/detekt.yml"))
+  buildUponDefaultConfig = true
+}
+
+
+// Java versions
+
+java {
+  toolchain.languageVersion.set(JavaLanguageVersion.of(21))
+  withSourcesJar()
+}
+
+kotlin { jvmToolchain(21) }
+

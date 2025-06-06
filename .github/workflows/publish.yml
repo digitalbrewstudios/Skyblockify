@@ -1,0 +1,37 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]*'"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Publish Fabric
+        uses: Kir-Antipov/mc-publish@3
+        with:
+          modrinth-id: skyblockify
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+      - name: Publish NeoForge
+        uses: Kir-Antipov/mc-publish@3
+        with:
+          modrinth-id: skyblockify
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+      - name: Publish Quilt
+        uses: Kir-Antipov/mc-publish@3
+        with:
+          modrinth-id: skyblockify
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}

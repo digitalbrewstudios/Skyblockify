@@ -1,0 +1,96 @@
+name: "🐛 Bug Report"
+description: Report a bug in skyblockify
+title: "[Bug] ..."
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🪲 Bug Report
+        Thanks for reporting a bug! Please fill out the form below so we can understand and fix the issue faster.
+
+  - type: input
+    id: mod_version
+    attributes:
+      label: Mod Version
+      description: What version of this mod are you using?
+      placeholder: "e.g. v0.3.1-beta"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mod_loader
+    attributes:
+      label: Mod Loader
+      description: Which mod loader are you using?
+      options:
+        - Fabric
+        - NeoForge
+        - Quilt
+    validations:
+      required: true
+
+  - type: input
+    id: loader_version
+    attributes:
+      label: Mod Loader Version
+      description: What version of the mod loader are you using?
+      placeholder: "e.g. Fabric Loader 0.15.7"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: What happened, and what did you expect to happen?
+      placeholder: "Describe the bug here."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Tell us exactly how to reproduce the bug.
+      placeholder: |
+        1. Place a redstone block next to a dispenser
+        2. Open the GUI
+        3. Observe crash
+      render: bash
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Crash Report / Latest Log
+      description: Paste relevant crash reports or logs (e.g. `latest.log`, `debug.log`, or crash report).
+      placeholder: "Paste your log here or attach it."
+      render: shell
+
+  - type: textarea
+    id: mod_list
+    attributes:
+      label: Mod List
+      description: List the other mods you're using (or attach your `mods` folder contents). Helps if another mod is causing issues for skyblockify.
+      placeholder: |
+        - Sodium 0.5.3
+        - Lithium 0.12.0
+        - MyCoolMod 1.0.1
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Before submitting...
+      options:
+        - label: I am using the latest version of the mod that is available on Modrinth or GitHub releases.
+          required: true
+        - label: I have searched for existing issues
+          required: true
+        - label: I have attached the logs or crash report
+          required: true
+        - label: I have provided my mod loader and version
+          required: true

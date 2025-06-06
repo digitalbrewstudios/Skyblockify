@@ -1,0 +1,31 @@
+modLoader="javafml"
+loaderVersion="${neoForgeVersion}"
+
+license="GPL-3.0Only" # Commecial usage of modifcations of this mod can be purchased a seperate licence.
+issueTrackerURL="https://github.com/digitalbrewstudios/skyblockify/issues"
+
+[[mods]]
+modId="${mod_id}"
+version="${version}-neoforge"
+displayName="Skyblockify"
+#updateJSONURL="https://api.modrinth.com/updates/skyblockify/forge_updates.json"
+displayURL="https://digitalbrewstudios.com/skyblockify"
+authors="DigitalBrewStudios Skyblockify Team and Contributors"
+description='''
+    An mod that includes everything that is needed for hypixel skyblock
+'''
+
+
+[[dependencies.${mod_id}]]
+modId="neoforge"
+type="required"
+versionRange="${neoForgeVersion}"
+ordering="NONE"
+side="CLIENT"
+
+[[dependencies.${mod_id}]]
+modId="minecraft"
+type="required"
+versionRange="${mcVersion}"
+ordering="NONE"
+side="CLIENT"

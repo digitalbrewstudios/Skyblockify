@@ -1,8 +1,8 @@
-{
+    {
 	inputs = {
 		nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-		flake-parts = { url = "github:hercules-ci/flake-parts"; inputs.nixpkgs.follows = "nixpkgs"; };
-		flake-compat = { url = "github:edolstra/flake-compat"; flake = false; };
+		flake-parts.url = "github:hercules-ci/flake-parts";
+		flake-compat.url = "https://flakehub.com/f/edolstra/flake-compat/1.tar.gz";
 	};
 
 	outputs = inputs@{ nixpkgs, flake-parts, ... }: 
@@ -16,7 +16,7 @@
 				...
 			}:
 			let
-				jdk = pkgs.zulu8;
+				jdk = pkgs.zulu;
 			in
 			{
 				_module.args.pkgs = import nixpkgs {

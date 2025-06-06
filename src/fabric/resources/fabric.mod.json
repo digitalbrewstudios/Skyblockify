@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "skyblockify",
+  "name": "Skyblockify",
+  "description": "An mod that includes everything that is needed for hypixel skyblock",
+  "version": "${version}-fabric",
+  "depends": {
+    "minecraft": "~${mcVersion}"
+  }
+}

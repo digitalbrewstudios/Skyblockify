@@ -4,6 +4,5 @@
 	"package": "${modid}.mixin",
 	"refmap": "${modid}.refmap.json",
 	"client": [
-		"GuiMainMenuMixin"
 	]
 }
