@@ -1,7 +1,7 @@
 
 [versions]
 unimined = "1.3.14"
-kotlin = "2.2.0-RC3"
+kotlin = "2.2.0"
 shaddow = "9.0.0-beta17"
 detekt = "1.23.8"
 mixins = "0.8.5"
