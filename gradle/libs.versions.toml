@@ -2,7 +2,7 @@
 [versions]
 unimined = "1.3.14"
 kotlin = "2.2.20"
-shaddow = "9.1.0"
+shaddow = "9.2.2"
 detekt = "1.23.8"
 mixins = "0.8.5"
 weblite = "1.2"
